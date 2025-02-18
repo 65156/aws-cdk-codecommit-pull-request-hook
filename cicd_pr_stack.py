@@ -94,9 +94,9 @@ class CICDPullRequestStack(core.Stack):
 
             project = codebuild.Project(
                 self,
-                f"{my_repo}_PullRequestTestAutomationProject",
+                f"{my_repo}_pr",
                 build_spec=codebuild.BuildSpec.from_source_filename(
-                    "buildspec-tests.yaml"
+                    "buildspec-pr.yaml"
                 ),
                 source=codebuild.Source.code_commit(repository=my_repository),
                 environment={"build_image": codebuild.LinuxBuildImage.AMAZON_LINUX_2_3},

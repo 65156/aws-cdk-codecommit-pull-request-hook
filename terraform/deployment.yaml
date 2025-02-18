@@ -1,0 +1,28 @@
+customer_prefix: ferrari
+project_uid: ny19d
+# customer prefix and project uid will be added automatically to all resources
+codecommit:
+  approval_templates:
+    - id: approvers
+      reference_existing: false
+      approvals_needed: 1
+      automated_reviews: true
+      pool_members:
+        - CodeCommitReviewer
+  repositories:
+    - id: development
+      reference_existing: false
+      approval_templates: 
+        - approvers
+    - id: testing
+      reference_existing: false
+      approval_templates: 
+        - approvers
+    - id: production
+      reference_existing: false
+      approval_templates: 
+        - approvers
+iam:
+  assumed_roles:
+  - id: CodeCommitReviewer
+    reference_existing: false

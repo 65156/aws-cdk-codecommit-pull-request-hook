@@ -1,0 +1,30 @@
+---
+version: 0.2
+env:
+  shell: bash
+phases:
+  install:
+    on-failure: ABORT
+    commands:
+      - set -e
+      - DEFAULT_PATH=$(pwd)
+      - TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+      - OUTPUT_PROFILE=shared
+      - cd /tmp
+      - echo "Build Stage is Build"
+  pre_build:
+    on-failure: ABORT
+    commands:
+      - BRANCH=$(echo ${CODEBUILD_WEBHOOK_HEAD_REF} | cut -d "/" -f3-)
+      - echo ${BRANCH}
+      - if [ "${BRANCH}"  = "production" ]; then # branch check -- will prevent execution if not on the right branch.
+      - echo $DEFAULT_PATH
+      - cd $DEFAULT_PATH && ls -l
+  build:
+    on-failure: ABORT
+    commands:
+      - echo "performing build..."
+      - source .codepipeline/build.sh
+  post_build:
+    commands:
+      - echo "finished executing build..."
