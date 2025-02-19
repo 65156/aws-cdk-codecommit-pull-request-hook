@@ -8,6 +8,10 @@ __pycache__
 *.egg-info
 .epr-env
 
+# Terraform Temp Files
+terraform/lambda_function_payload.zip
+terraform/.terraform*
+terraform/.terraform.lock.hcl
 # CDK asset staging directory
 .cdk.staging
 cdk.out

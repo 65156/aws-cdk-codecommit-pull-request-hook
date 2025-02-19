@@ -124,11 +124,6 @@ resource "aws_codebuild_project" "this" {
         group_name  = "log-group"
         stream_name = "log-stream"
         }
-
-        s3_logs {
-        status   = "ENABLED"
-        location = "${aws_s3_bucket.example.id}/build-log"
-        }
     }
 
     source {
@@ -143,19 +138,7 @@ resource "aws_codebuild_project" "this" {
 
     source_version = "master"
 
-    vpc_config {
-        vpc_id = aws_vpc.example.id
 
-        subnets = [
-        aws_subnet.example1.id,
-        aws_subnet.example2.id,
-        ]
-
-        security_group_ids = [
-        aws_security_group.example1.id,
-        aws_security_group.example2.id,
-        ]
-    }
 
     tags = {
         Environment = "Test"
@@ -172,6 +155,11 @@ resource "aws_codebuild_project" "this" {
 
 
 # lambda function
+data "archive_file" "lambda" {
+  type        = "zip"
+  source_file = "lambda_publish_build_result/handler.py"
+  output_path = "lambda_function_payload.zip"
+}
 resource "aws_lambda_function" "lambda" {
     # If the file is not in the current working directory you will need to include a
     # path.module in the filename.
