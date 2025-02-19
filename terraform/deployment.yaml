@@ -1,6 +1,7 @@
 customer_prefix: ferrari
 project_uid: ny19d
 # customer prefix and project uid will be added automatically to all resources
+lambda_automation: AUTO_CLOSE # accepted modes are FULL_AUTO, AUTO_CLOSE, APPROVE_ONLY
 codecommit:
   approval_templates:
     - id: approvers
