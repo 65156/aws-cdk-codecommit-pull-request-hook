@@ -7,7 +7,9 @@
 #   ▀▀▀·▀▀▀▀ ▀▀  █▪▀▀▀     ▀▀▀▀ .▀    ▀█▄▀▪.▀  ▀ ▀▀▀  ▀▀▀▀ 
 #       ---------------------------------------------
 >>> .summary
-Lambda function that adds a comment to the Pull Request with the tests results
+Lambda function features
+- Adds status comment to pull request
+- Automatic Approval on successful build
 
 >>> .script_start'''
 

@@ -11,6 +11,7 @@ Lambda function features
 - Adds status comment to pull request
 - Automatic Approval on successful build
 - automatic close of PR on failed build
+- automatic attempt to merge PR.
 
 >>> .script_start'''
 
@@ -20,7 +21,7 @@ import logging
 
 # Initialize the logger
 logger = logging.getLogger()
-logger.setLevel(logging.ERROR)
+logger.setLevel(logging.DEBUG)
 
 # Initialize the CodeCommit client
 codecommit_client = boto3.client("codecommit")
@@ -100,6 +101,29 @@ def update_approval_state(pull_request_id, approval_status):
         raise
 
 
+def merge_or_close_pr(pull_request_id, repository_name, approval_status):
+    """Merge the PR if approved or close it if revoked."""
+    logger.debug(f"Merging or closing PR {pull_request_id} with status {approval_status}")
+    try:
+        if approval_status == "APPROVE":
+            codecommit_client.merge_pull_request_by_fast_forward(
+                pullRequestId=pull_request_id,
+                repositoryName=repository_name
+            )
+            logger.info(f"Pull request {pull_request_id} merged successfully")
+            return f"Pull request {pull_request_id} merged successfully"
+        elif approval_status == "REVOKE":
+            codecommit_client.update_pull_request_state(
+                pullRequestId=pull_request_id,
+                pullRequestState="CLOSED"
+            )
+            logger.info(f"Pull request {pull_request_id} closed successfully")
+            return f"Pull request {pull_request_id} closed successfully"
+    except Exception as e:
+        logger.error(f"Error merging or closing pull request: {str(e)}")
+        raise
+
+
 def lambda_handler(event, context):
     """Lambda handler function"""
     logger.debug(f"Received event: {json.dumps(event)}")
@@ -135,7 +159,8 @@ def lambda_handler(event, context):
         if approval_status:
             try:
                 update_approval_state(pull_request_id, approval_status)
-                return {'statusCode': 200, 'body': {"status": "approved"}}
+                merge_close_message = merge_or_close_pr(pull_request_id, repository_name, approval_status)
+                return {'statusCode': 200, 'body': json.dumps(merge_close_message)}
             except Exception as e:
                 return {'statusCode': 500, 'body': json.dumps(f"Error processing pull request: {str(e)}")}
 
