@@ -1,4 +1,15 @@
-""" Lambda function that adds a comment to the Pull Request with the tests results """
+'''
+#       ---------------------------------------------
+#   ▪  ▄▄▄▄· • ▌ ▄ ·.     .▄▄ ·  ▄▄▄·      ▄▄▄  ▄▄▄▄▄.▄▄ · 
+#   ██ ▐█ ▀█▪·██ ▐███▪    ▐█ ▀. ▐█ ▄█▪     ▀▄ █·•██  ▐█ ▀. 
+#   ▐█·▐█▀▀█▄▐█ ▌▐▌▐█·    ▄▀▀▀█▄ ██▀· ▄█▀▄ ▐▀▀▄  ▐█.▪▄▀▀▀█▄
+#   ▐█▌██▄▪▐███ ██▌▐█▌    ▐█▄▪▐█▐█▪·•▐█▌.▐▌▐█•█▌ ▐█▌·▐█▄▪▐█
+#   ▀▀▀·▀▀▀▀ ▀▀  █▪▀▀▀     ▀▀▀▀ .▀    ▀█▄▀▪.▀  ▀ ▀▀▀  ▀▀▀▀ 
+#       ---------------------------------------------
+>>> .summary
+Lambda function that adds a comment to the Pull Request with the tests results
+
+>>> .script_start'''
 
 import boto3
 import json
