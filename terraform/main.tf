@@ -43,7 +43,7 @@ resource "aws_codecommit_approval_rule_template" "reviewers" {
     Statements = [{
       Type                    = "Approvers"
       NumberOfApprovalsNeeded = each.value.approvals_needed
-      ApprovalPoolMembers     = each.value.pool_members
+      ApprovalPoolMembers     = [values(aws_iam_role.this)[*].arn]
     }]
   })
 }
@@ -98,7 +98,28 @@ data "aws_iam_policy_document" "cicd" {
     }
     actions = ["sts:AssumeRole"]
   }
+  statement {
+    effect = "Allow"
+    resources = ["*"]
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+      ]
+  }
+  statement {
+    effect = "Allow"
+    resources = [for i in values(aws_codecommit_repository.this)[*] : i.arn]
+    actions = [
+      "codecommit:UpdatePullRequestApprovalState",
+      "codecommit:PostCommentForPullRequest",
+      "codecommit:MergePullRequestByFastForward",
+      "codecommit:GetPullRequest"
+      ]
+  }
 }
+
+
 
 # codebuild - test execution environment triggers
 resource "aws_cloudwatch_event_rule" "pr" {
